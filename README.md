@@ -178,7 +178,7 @@ Al final: `total: a/n (p%)` con un decimal.
 
 ---
 
-## Decisiones de diseño (estilo junior)
+## Decisiones de diseño 
 
 - **Sin librerías externas**: todo usa el JDK estándar (`BufferedReader`, `TreeMap`, `Normalizer`, `Math`).
 - **Sin parser JSON completo**: se usa un mini-parser manual que busca claves/valores por posición de caracteres. Es suficiente para el formato plano que usa la API de Claude.
