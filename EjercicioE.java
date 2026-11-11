@@ -6,17 +6,11 @@ import java.util.TreeMap;
 
 /**
  * Ejercicio E: Evaluacion de respuestas (LLM evals)
- *
  * Cada linea es un JSON con: id, categoria, esperado, respuesta
- *
  * Una respuesta PASA si, al normalizar ambas cadenas
  * (minusculas, sin tildes/diacriticos, todo lo que no sea letra/numero ->
  * espacio),
  * el valor "esperado" aparece como PALABRAS COMPLETAS dentro de "respuesta".
- *
- * Ejemplo: esperado="42" NO pasa con respuesta="420" porque "42" no es una
- * palabra completa en "420"; si pasa con "La respuesta es 42."
- *
  * Salida:
  * <categoria>: aprobadas/total (en orden alfabetico)
  * total: a/n (p%) (porcentaje con 1 decimal)
@@ -34,18 +28,14 @@ public class EjercicioE {
         TreeMap<String, int[]> categorias = new TreeMap<>();
         int totalAprobadas = 0;
         int totalCasos = 0;
-
         for (String linea : lineas) {
             linea = linea.trim();
             if (linea.isEmpty())
                 continue;
-
             String categoria = EjercicioA.extraerString(linea, "\"categoria\"");
             String esperado = EjercicioA.extraerString(linea, "\"esperado\"");
             String respuesta = EjercicioA.extraerString(linea, "\"respuesta\"");
-
             boolean pasa = contienePalabraCompleta(normalizar(respuesta), normalizar(esperado));
-
             categorias.computeIfAbsent(categoria, k -> new int[] { 0, 0 });
             categorias.get(categoria)[1]++;
             if (pasa) {
@@ -54,7 +44,6 @@ public class EjercicioE {
             }
             totalCasos++;
         }
-
         // Imprimir por categoria en orden alfabetico
         for (String cat : categorias.keySet()) {
             int[] v = categorias.get(cat);
@@ -65,10 +54,6 @@ public class EjercicioE {
         double pct = totalCasos == 0 ? 0.0 : (100.0 * totalAprobadas / totalCasos);
         System.out.printf(java.util.Locale.US, "total: %d/%d (%.1f%%)%n", totalAprobadas, totalCasos, pct);
     }
-
-    // -------------------------------------------------------------------------
-    // Normalizacion
-    // -------------------------------------------------------------------------
 
     /**
      * Normaliza una cadena:
@@ -91,14 +76,14 @@ public class EjercicioE {
         return limpio.trim();
     }
 
-/**
+    /**
      * Comprueba si "esperado" aparece como palabras completas dentro de "texto".
      * Ambas cadenas ya deben estar normalizadas.
-     *
      * Tecnica: buscar " esperado " en " texto " (con espacios al borde).
      */
     static boolean contienePalabraCompleta(String texto, String esperado) {
-        if (esperado.isEmpty()) return true;
+        if (esperado.isEmpty())
+            return true;
         return (" " + texto + " ").contains(" " + esperado + " ");
     }
 }

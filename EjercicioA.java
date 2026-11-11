@@ -7,14 +7,12 @@ import java.util.TreeMap;
 
 /**
  * Ejercicio A: Respuesta en streaming (API de Claude)
- *
  * Lee eventos SSE (Server-Sent Events) del formato event:/data: y reconstruye
  * cada mensaje completo. Al llegar message_stop imprime 4 lineas:
- *   texto: <texto completo>
- *   stop_reason: <razon>
- *   input_tokens: N
- *   output_tokens: N
- *
+ * texto: <texto completo>
+ * stop_reason: <razon>
+ * input_tokens: N
+ * output_tokens: N
  * Los eventos ping se ignoran.
  * La entrada puede tener varios mensajes seguidos.
  */
@@ -35,7 +33,8 @@ public class EjercicioA {
 
         for (String linea : lineas) {
             // Solo nos interesan las lineas "data:"
-            if (!linea.startsWith("data:")) continue;
+            if (!linea.startsWith("data:"))
+                continue;
 
             String data = linea.substring(5).trim();
 
@@ -78,10 +77,6 @@ public class EjercicioA {
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Utilidades de lectura e I/O (reutilizadas por los otros ejercicios)
-    // -------------------------------------------------------------------------
-
     /** Lee todas las lineas de System.in con soporte UTF-8. */
     public static List<String> leerLineas() throws IOException {
         // Forzamos UTF-8 en stdin para que las tildes lleguen bien
@@ -100,23 +95,23 @@ public class EjercicioA {
         System.setOut(new java.io.PrintStream(System.out, true, java.nio.charset.StandardCharsets.UTF_8));
     }
 
-    // -------------------------------------------------------------------------
-    // Mini-parser JSON manual (sin dependencias externas)
-    // -------------------------------------------------------------------------
-
     /**
      * Extrae el valor de cadena de una clave JSON simple.
      * Busca: "clave": "valor" (maneja escapes basicos \n \t \" \\).
      */
     public static String extraerString(String json, String clave) {
         int pos = json.indexOf(clave);
-        if (pos < 0) return "";
+        if (pos < 0)
+            return "";
         int dosPuntos = json.indexOf(':', pos + clave.length());
-        if (dosPuntos < 0) return "";
+        if (dosPuntos < 0)
+            return "";
         // Avanzar hasta la primera comilla de apertura
         int i = dosPuntos + 1;
-        while (i < json.length() && json.charAt(i) != '"') i++;
-        if (i >= json.length()) return "";
+        while (i < json.length() && json.charAt(i) != '"')
+            i++;
+        if (i >= json.length())
+            return "";
         i++; // saltar la comilla inicial
 
         StringBuilder sb = new StringBuilder();
@@ -125,11 +120,21 @@ public class EjercicioA {
             if (c == '\\' && i + 1 < json.length()) {
                 char sig = json.charAt(i + 1);
                 switch (sig) {
-                    case 'n':  sb.append('\n'); break;
-                    case 't':  sb.append('\t'); break;
-                    case '"':  sb.append('"');  break;
-                    case '\\': sb.append('\\'); break;
-                    default:   sb.append(sig);  break;
+                    case 'n':
+                        sb.append('\n');
+                        break;
+                    case 't':
+                        sb.append('\t');
+                        break;
+                    case '"':
+                        sb.append('"');
+                        break;
+                    case '\\':
+                        sb.append('\\');
+                        break;
+                    default:
+                        sb.append(sig);
+                        break;
                 }
                 i += 2;
             } else if (c == '"') {
@@ -148,19 +153,25 @@ public class EjercicioA {
      */
     public static long extraerLong(String json, String clave) {
         int pos = json.indexOf(clave);
-        if (pos < 0) return 0;
+        if (pos < 0)
+            return 0;
         int dosPuntos = json.indexOf(':', pos + clave.length());
-        if (dosPuntos < 0) return 0;
+        if (dosPuntos < 0)
+            return 0;
 
         int i = dosPuntos + 1;
         // Saltamos espacios y posibles comillas (por si el numero viene como string)
-        while (i < json.length() && (json.charAt(i) == ' ' || json.charAt(i) == '"')) i++;
+        while (i < json.length() && (json.charAt(i) == ' ' || json.charAt(i) == '"'))
+            i++;
 
         int inicio = i;
-        if (i < json.length() && json.charAt(i) == '-') i++;
-        while (i < json.length() && Character.isDigit(json.charAt(i))) i++;
+        if (i < json.length() && json.charAt(i) == '-')
+            i++;
+        while (i < json.length() && Character.isDigit(json.charAt(i)))
+            i++;
 
-        if (inicio == i) return 0;
+        if (inicio == i)
+            return 0;
         try {
             return Long.parseLong(json.substring(inicio, i));
         } catch (NumberFormatException e) {
