@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prueba Anthropic · Hackatón individual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FAF9F5;--bg2:#F0EEE6;--ink:#141413;--muted:#6B6A64;--line:#E8E6DC;--card:#FFFFFF;--accent:#D97757;--accentInk:#141413;--tint:#F5E6DF;--heroBg:#141413;--heroInk:#FAF9F5;--divBg:#E8E6DC;--divInk:#141413;--codeBg:#141413;--codeInk:#FAF9F5;--codeHead:#2A2925;--inl:#E8E6DC;--c1:#D97757;--c2:#6A9BCC;--c3:#788C5D;--c4:#141413;--ok:#788C5D;--hf:Poppins,Arial,sans-serif;--bf:Lora,Georgia,serif;--mf:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;--r:12px;--br:10px;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141413;--bg2:#1C1B19;--ink:#FAF9F5;--muted:#B0AEA5;--line:#34332E;--card:#1F1E1B;--accent:#D97757;--accentInk:#141413;--tint:#2E231E;--heroBg:#0E0E0D;--heroInk:#FAF9F5;--divBg:#1F1E1B;--divInk:#FAF9F5;--codeBg:#0E0E0D;--codeInk:#FAF9F5;--codeHead:#2A2925;--inl:#2A2925;--c1:#D97757;--c2:#6A9BCC;--c3:#9AAE7E;--c4:#E8E6DC;--ok:#9AAE7E;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141413;--bg2:#1C1B19;--ink:#FAF9F5;--muted:#B0AEA5;--line:#34332E;--card:#1F1E1B;--accent:#D97757;--accentInk:#141413;--tint:#2E231E;--heroBg:#0E0E0D;--heroInk:#FAF9F5;--divBg:#1F1E1B;--divInk:#FAF9F5;--codeBg:#0E0E0D;--codeInk:#FAF9F5;--codeHead:#2A2925;--inl:#2A2925;--c1:#D97757;--c2:#6A9BCC;--c3:#9AAE7E;--c4:#E8E6DC;--ok:#9AAE7E;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 70px)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.65 var(--bf)}
+h1,h2,h3{font-family:var(--hf);font-weight:600;letter-spacing:-0.02em;line-height:1.08;margin:0}
+a{color:var(--accent)}code{font:500 .86em var(--mf);background:var(--inl);padding:2px 7px;border-radius:6px}
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:20px;padding:12px clamp(20px,5vw,64px);padding-top:calc(12px + env(safe-area-inset-top,0px));background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:21;background:var(--bg)}
+.top b{font:600 18px var(--hf);letter-spacing:-.01em}.top nav{margin-left:auto;display:flex;gap:6px}
+.top nav a{font:500 14px var(--hf);color:var(--muted);text-decoration:none;padding:7px 14px;border-radius:var(--br)}.top nav a:hover{background:var(--tint);color:var(--accent)}
+.brandbar{height:4px;display:grid;grid-template-columns:repeat(4,1fr)}.brandbar i{display:block}.brandbar i:nth-child(1){background:var(--c1)}.brandbar i:nth-child(2){background:var(--c2)}.brandbar i:nth-child(3){background:var(--c3)}.brandbar i:nth-child(4){background:var(--c4)}
+section{position:relative;padding:40px clamp(20px,5vw,64px) 64px}
+.frame{display:none}
+.strip{display:flex;gap:10px 22px;flex-wrap:wrap;font:500 13px var(--hf);color:var(--muted);margin-bottom:30px}.strip span:last-child{color:var(--accent);margin-left:auto}
+.strip.inv{color:inherit;opacity:.75}.strip.inv span:last-child{color:inherit}
+.red.hero{background:var(--heroBg);color:var(--heroInk);padding-top:56px;padding-bottom:72px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(28px,5vw,72px);align-items:end}
+.pre{font:500 15px var(--hf);margin:0 0 14px;opacity:.8}
+.hero h1{font-size:clamp(56px,9vw,120px);font-weight:600}.hero h1 .x{display:block;color:var(--c1)}
+.lead{font-size:clamp(17px,1.6vw,20px);max-width:58ch;margin:22px 0 0}.disc{font-size:13px;opacity:.7;margin:22px 0 0;max-width:70ch}
+.hero-card{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;box-shadow:0 1px 2px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.08)}
+.hc-row{display:flex;align-items:baseline;gap:14px;padding:8px 0;border-bottom:1px solid var(--line)}.hc-row b{font:600 40px/1 var(--hf);min-width:58px}
+.hc-row:nth-child(1) b{color:var(--c1)}.hc-row:nth-child(2) b{color:var(--c2)}.hc-row:nth-child(3) b{color:var(--c4)}.hc-row span{font:500 15px var(--hf)}
+.hc-grades{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.hc-grades div{background:var(--bg2);border-radius:calc(var(--r) - 4px);padding:10px 12px}
+.hc-grades b{display:block;font:600 28px/1 var(--hf)}.hc-grades div:nth-child(1) b{color:var(--c1)}.hc-grades div:nth-child(2) b{color:var(--c2)}.hc-grades div:nth-child(3) b{color:var(--c4)}.hc-grades span{font:500 12px var(--hf);color:var(--muted)}
+.cream{background:var(--bg)}
+.rules{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.rule{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}.rule span{font:600 26px/1 var(--hf)}
+.rule:nth-child(1) span{color:var(--c1)}.rule:nth-child(2) span{color:var(--c2)}.rule:nth-child(3) span{color:var(--c3)}.rule:nth-child(4) span{color:var(--c4)}
+.rule b{display:block;font:600 18px var(--hf);margin:8px 0 4px}.rule p{margin:0;font-size:15px;color:var(--muted)}
+.howrun{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);grid-template-rows:auto 1fr;gap:10px 32px;margin-top:36px;align-items:start}
+.howrun>div:first-child{grid-row:1/3}.howrun h3{font-size:24px;margin:0 0 6px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}.tab{font:500 14px var(--hf);border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 16px;border-radius:var(--br);cursor:pointer}
+.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accentInk)}
+.tplpane[hidden]{display:none}.tplpane p{margin:4px 0 0;font-size:13.5px;color:var(--muted)}
+.agenda-s{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:8px}.agenda-s li{display:grid;grid-template-columns:64px 1fr;gap:0 10px;border-top:1px solid var(--line);padding-top:8px;font-size:14px}
+.agenda-s b{display:block;font:600 15px var(--hf)}.agenda-s .t{grid-row:1/3;font:600 15px var(--mf);color:var(--accent)}.agenda-s span:last-child{color:var(--muted)}
+.code{margin:10px 0 14px;border-radius:calc(var(--r) - 4px);overflow:hidden;background:var(--codeBg);border:1px solid var(--line)}
+.code-h{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:var(--codeHead);color:var(--codeInk);font:500 12.5px var(--hf)}
+.copy{font:500 12px var(--hf);border:1px solid rgba(255,255,255,.35);background:transparent;color:var(--codeInk);padding:3px 12px;border-radius:var(--br);cursor:pointer}.copy:hover{background:rgba(255,255,255,.1)}
+.code pre{margin:0;padding:12px 14px;overflow:auto;max-height:340px}.code code{background:none;padding:0;color:var(--codeInk);font:400 12.8px/1.55 var(--mf);white-space:pre-wrap;word-break:break-word}
+.code.off pre{max-height:240px}.code.off .code-h{background:var(--accent);color:var(--accentInk)}.code.off .copy{color:var(--accentInk);border-color:currentColor}
+.red.div{background:var(--divBg);color:var(--divInk);padding-top:44px;padding-bottom:48px}.div h2{font-size:clamp(48px,8vw,104px)}.divsub{font-size:18px;margin:10px 0 0;max-width:60ch;opacity:.85}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:start}
+.cols h2{font-size:clamp(30px,4vw,46px);margin-bottom:14px}.prose p{margin:0 0 12px;max-width:62ch}.note{font-size:14px;color:var(--muted)}
+ul.plain{margin:6px 0;padding-left:20px}ul.plain li{margin:6px 0}
+.session{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr) auto;gap:14px;align-items:end;background:var(--tint);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin:26px 0 8px}
+.session .ss-t b{font:600 20px var(--hf)}.session .ss-t p{margin:4px 0 0;font-size:14px;color:var(--muted)}
+.session label{display:flex;flex-direction:column;gap:6px;font:500 13px var(--hf)}
+.session input{font:500 15px var(--hf);padding:10px 12px;border:1px solid var(--line);border-radius:calc(var(--r) - 6px);background:var(--card);color:var(--ink)}
+.session input:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent)}
+.sstate{font:600 12.5px var(--hf);padding:9px 14px;border-radius:var(--br);border:1px dashed var(--muted);color:var(--muted);white-space:nowrap}.sstate.ok{background:var(--ok);border:1px solid var(--ok);color:#fff}
+.exnav{display:grid;grid-template-columns:270px minmax(0,1fr);gap:24px;margin-top:20px;align-items:start}
+.exlist{display:flex;flex-direction:column;gap:8px;position:sticky;top:80px}
+.exbtn{display:grid;grid-template-columns:44px 1fr;gap:2px 12px;text-align:left;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:12px 14px;border-radius:var(--r);cursor:pointer;font:inherit}
+.exbtn .lt{grid-row:1/3;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font:600 18px var(--hf);color:#fff;background:var(--c1)}
+.exbtn:nth-child(2) .lt{background:var(--c2)}.exbtn:nth-child(3) .lt{background:var(--c3);color:#202124}.exbtn:nth-child(4) .lt{background:var(--c4)}.exbtn:nth-child(5) .lt{background:var(--accent);color:var(--accentInk)}
+.exbtn b{font:600 15.5px/1.2 var(--hf)}.exbtn small{font:400 12.5px var(--hf);color:var(--muted)}
+.exbtn[aria-selected="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset;background:var(--tint)}
+.expane{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px 24px;min-width:0}.expane[hidden]{display:none}
+.ex-h{display:flex;align-items:center;gap:16px;margin-bottom:10px}.ex-h .lt{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font:600 26px var(--hf);color:#fff;background:var(--accent);flex:none}
+.ex-h b{display:block;font:600 26px/1.15 var(--hf)}.ex-h small{font:500 13px var(--hf);color:var(--muted)}
+.expane p,.expane li{font-size:15.5px}
+.samples{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}.samples .code{margin:12px 0 6px}.official{margin:6px 0 0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:1000px){.rules{grid-template-columns:1fr 1fr}.exnav{grid-template-columns:minmax(0,1fr)}.exlist{position:static;flex-direction:row;overflow-x:auto}.exbtn{min-width:210px}.session{grid-template-columns:1fr 1fr}.session .ss-t{grid-column:1/-1}}
+@media (max-width:900px){.hero-grid,.cols,.howrun{grid-template-columns:minmax(0,1fr)}.howrun>div:first-child{grid-row:auto}.top nav a{padding:6px 8px}}
+@media (max-width:560px){.rules,.samples,.session{grid-template-columns:1fr}.top nav{display:none}}
+.cream .strip{display:none}
+.exbtn:nth-child(3) .lt{color:#fff}.brandbar{display:none}.hero h1 .x{color:var(--c1)}.top{border-bottom-color:var(--line)}</style></head><body>
+<header class="top"><b>Prueba Anthropic</b><nav><a href="#reglas">Reglas</a><a href="#ejercicios">Ejercicios</a><a href="#entrada">Mi entrada</a></nav></header>
+<div class="brandbar" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+<section class="red hero"><div class="frame"></div><div class="strip inv"><span>2026-2</span><span>Escuela Colombiana de Ingeniería</span><span>Hackatón</span><span>Prueba Anthropic</span></div>
+<div class="hero-grid">
+  <div class="inner"><p class="pre">Una hora · individual · cinco ejercicios con la API de Claude</p><h1>Prueba<span class="x">Anthropic</span></h1><p class="lead">Programen las piezas de un cliente de la API de Claude: <b>streaming</b>, <b>uso de herramientas</b>, <b>costos con caché</b>, <b>límites de velocidad</b> y <b>evaluaciones</b>. Cada participante recibe su propia entrada.</p><p class="disc">Actividad de clase basada en la documentación pública de la API de Claude; los datos son de ejemplo y los precios y límites están a escala. No es un evento oficial de Anthropic.</p></div>
+  <div class="hero-card">
+    <div class="hc-row"><b>5</b><span>ejercicios reales</span></div>
+    <div class="hc-row"><b>60</b><span>minutos, individual</span></div>
+    <div class="hc-row"><b>1</b><span>punto por ejercicio aceptado</span></div>
+    <div class="hc-grades"><div><b>5.0</b><span>1.º + premio</span></div><div><b>4.5</b><span>2.º</span></div><div><b>4.0</b><span>3.º</span></div></div>
+  </div></div></section>
+
+<section class="cream" id="reglas"><div class="strip"><span>2026-2</span><span>Escuela Colombiana de Ingeniería</span><span>Hackatón</span><span>Prueba Anthropic</span></div>
+<div class="rules">
+  <div class="rule"><span>01</span><b>Individual</b><p>Cada persona compite sola, con su propio repositorio. Nada de ayudarse entre compañeros durante la hora.</p></div>
+  <div class="rule"><span>02</span><b>Cualquier lenguaje</b><p>El programa lee la entrada por consola y escribe la respuesta por consola.</p></div>
+  <div class="rule"><span>03</span><b>Sin IA para el código</b><p>Como en una prueba técnica real. La documentación del lenguaje sí se vale.</p></div>
+  <div class="rule"><span>04</span><b>Cómo se califica</b><p>Cuando tu programa resuelva tu entrada oficial, entrégale la salida al jurado. Si está bien, suma 1 punto. Si empatan, gana quien terminó primero.</p></div>
+</div>
+<div class="howrun"><div><h3>Cómo se ejecuta</h3><p class="note">Guarden su entrada oficial en <code>entrada.txt</code>, corran el programa y revisen primero que el ejemplo dé la salida esperada.</p>
+<ol class="agenda-s"><li><span class="t">00–05</span><b>Arranque</b><span>Cada uno crea su repositorio, genera su entrada y lee los ejercicios.</span></li><li><span class="t">05–55</span><b>A resolver</b><span>En el orden que quieran. Cada salida terminada se entrega al jurado.</span></li><li><span class="t">55–60</span><b>Podio</b><span>El jurado revela el podio, las notas y el premio.</span></li></ol></div>
+<div class="tabs" role="tablist"><button type="button" class="tab" role="tab" data-lang="Python" aria-selected="true">Python</button><button type="button" class="tab" role="tab" data-lang="Java" aria-selected="false">Java</button><button type="button" class="tab" role="tab" data-lang="JavaScript" aria-selected="false">JavaScript</button><button type="button" class="tab" role="tab" data-lang="C++" aria-selected="false">C++</button></div><div class="tplpanes"><div class="tplpane" data-lang="Python"><div class="code"><div class="code-h"><span>Python</span><button type="button" class="copy">Copiar</button></div><pre><code>import sys
+lineas = sys.stdin.read().splitlines()
+# ... resuelve y usa print()</code></pre></div><p>Para correrlo: <code>python solucion.py &lt; entrada.txt</code></p></div><div class="tplpane" data-lang="Java" hidden><div class="code"><div class="code-h"><span>Java</span><button type="button" class="copy">Copiar</button></div><pre><code>import java.io.*;
+public class Main {
+  public static void main(String[] a) throws IOException {
+    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+    String linea;
+    while ((linea = in.readLine()) != null) { /* ... */ }
+  }
+}</code></pre></div><p>Para correrlo: <code>javac Main.java &amp;&amp; java Main &lt; entrada.txt</code></p></div><div class="tplpane" data-lang="JavaScript" hidden><div class="code"><div class="code-h"><span>JavaScript</span><button type="button" class="copy">Copiar</button></div><pre><code>const lineas = require(&#x27;fs&#x27;).readFileSync(0, &#x27;utf8&#x27;).trim().split(&#x27;\n&#x27;);
+// ... resuelve y usa console.log()</code></pre></div><p>Para correrlo: <code>node solucion.js &lt; entrada.txt</code></p></div><div class="tplpane" data-lang="C++" hidden><div class="code"><div class="code-h"><span>C++</span><button type="button" class="copy">Copiar</button></div><pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main() {
+  string linea;
+  while (getline(cin, linea)) { /* ... */ }
+}</code></pre></div><p>Para correrlo: <code>g++ -O2 sol.cpp -o sol &amp;&amp; ./sol &lt; entrada.txt</code></p></div></div></div>
+</section>
+
+<section class="red div" id="ejercicios"><div class="frame"></div><div class="strip inv"><span>2026-2</span><span>Escuela Colombiana de Ingeniería</span><span>Hackatón</span><span>Prueba Anthropic</span></div><h2>Ejercicios</h2><p class="divsub">Las piezas de un cliente de la API de Claude.</p></section>
+<section class="cream"><div class="strip"><span>2026-2</span><span>Escuela Colombiana de Ingeniería</span><span>Hackatón</span><span>Prueba Anthropic</span></div>
+<div class="cols"><div class="prose"><h2>Un cliente de la API de Claude, por niveles</h2><p>Cinco piezas que todo el que construye con Claude tiene que programar: leer una respuesta en streaming, ejecutar las herramientas que pide el modelo, calcular lo que cuesta cada llamada con caché de prompts, respetar los límites de velocidad y evaluar si las respuestas están bien.</p></div><div class="prose"><p style="margin-top:8px"><b>Lo real:</b> los formatos de los eventos, de las herramientas, de los precios con caché y de los límites salen de la documentación pública de la API de Claude. Cada ejercicio trae un ejemplo con su salida esperada, y la entrada oficial es distinta para cada participante.</p><p class="note">Pueden usar la librería de JSON de su lenguaje. En Windows, si salen mal las tildes, guarden la salida en un archivo con UTF-8.</p></div></div>
+<div id="entrada"><div class="session"><div class="ss-t"><b>Tu entrada oficial</b><p>Cada participante recibe sus propios casos, distintos a los de los demás. Escribe tu nombre tal como te inscribió el jurado y el código de la prueba que está en el tablero.</p></div><label>Tu nombre<input id="sname" type="text" autocomplete="off" placeholder="Como te inscribieron"></label><label>Código de la prueba<input id="scode" type="text" autocomplete="off" placeholder="Lo da el jurado"></label><span class="sstate" id="sstate">Sin sesión</span></div></div>
+<div class="exnav"><div class="exlist" role="tablist"><button type="button" class="exbtn" role="tab" data-ex="b1" aria-selected="true"><span class="lt">A</span><b>Respuesta en streaming</b><small>API de Claude · Streaming</small></button><button type="button" class="exbtn" role="tab" data-ex="b2" aria-selected="false"><span class="lt">B</span><b>Uso de herramientas</b><small>API de Claude · Tool use</small></button><button type="button" class="exbtn" role="tab" data-ex="b3" aria-selected="false"><span class="lt">C</span><b>Costos con caché de prompts</b><small>API de Claude · Prompt caching y precios</small></button><button type="button" class="exbtn" role="tab" data-ex="b4" aria-selected="false"><span class="lt">D</span><b>Límites de velocidad</b><small>API de Claude · Rate limits</small></button><button type="button" class="exbtn" role="tab" data-ex="b5" aria-selected="false"><span class="lt">E</span><b>Evaluación de respuestas</b><small>Evaluaciones calificadas con código</small></button></div><div class="expanes"><article class="expane" data-ex="b1"><div class="ex-h"><span class="lt">A</span><div><b>Respuesta en streaming</b><small>API de Claude · Streaming</small></div></div><p>Con streaming, la API de Claude manda la respuesta en pedazos como eventos <code>event:</code> / <code>data:</code>. Reconstruyan cada mensaje completo.</p><ul class="plain"><li><code>message_start</code> trae <code>usage.input_tokens</code>.</li><li>Cada <code>content_block_delta</code> con <code>text_delta</code> agrega texto al bloque de su <code>index</code>; el texto final es la unión de los bloques en orden.</li><li><code>message_delta</code> trae <code>stop_reason</code> y <code>usage.output_tokens</code>. Ignoren <code>ping</code>.</li><li>Al llegar <code>message_stop</code>, impriman 4 líneas: <code>texto: …</code>, <code>stop_reason: …</code>, <code>input_tokens: N</code>, <code>output_tokens: N</code>. La entrada trae varios mensajes seguidos.</li></ul><div class="samples"><div class="code"><div class="code-h"><span>Ejemplo · entrada</span><button type="button" class="copy">Copiar</button></div><pre><code>event: message_start
+data: {&quot;type&quot;: &quot;message_start&quot;, &quot;message&quot;: {&quot;id&quot;: &quot;msg_01&quot;, &quot;type&quot;: &quot;message&quot;, &quot;role&quot;: &quot;assistant&quot;, &quot;model&quot;: &quot;claude-ejemplo&quot;, &quot;content&quot;: [], &quot;stop_reason&quot;: null, &quot;usage&quot;: {&quot;input_tokens&quot;: 25, &quot;output_tokens&quot;: 1}}}
+
+event: content_block_start
+data: {&quot;type&quot;: &quot;content_block_start&quot;, &quot;index&quot;: 0, &quot;content_block&quot;: {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;&quot;}}
+
+event: content_block_delta
+data: {&quot;type&quot;: &quot;content_block_delta&quot;, &quot;index&quot;: 0, &quot;delta&quot;: {&quot;type&quot;: &quot;text_delta&quot;, &quot;text&quot;: &quot;¡Hola&quot;}}
+
+event: ping
+data: {&quot;type&quot;: &quot;ping&quot;}
+
+event: content_block_delta
+data: {&quot;type&quot;: &quot;content_block_delta&quot;, &quot;index&quot;: 0, &quot;delta&quot;: {&quot;type&quot;: &quot;text_delta&quot;, &quot;text&quot;: &quot;! Soy&quot;}}
+
+event: content_block_delta
+data: {&quot;type&quot;: &quot;content_block_delta&quot;, &quot;index&quot;: 0, &quot;delta&quot;: {&quot;type&quot;: &quot;text_delta&quot;, &quot;text&quot;: &quot; Claude.&quot;}}
+
+event: content_block_stop
+data: {&quot;type&quot;: &quot;content_block_stop&quot;, &quot;index&quot;: 0}
+
+event: content_block_start
+data: {&quot;type&quot;: &quot;content_block_start&quot;, &quot;index&quot;: 1, &quot;content_block&quot;: {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;&quot;}}
+
+event: content_block_delta
+data: {&quot;type&quot;: &quot;content_block_delta&quot;, &quot;index&quot;: 1, &quot;delta&quot;: {&quot;type&quot;: &quot;text_delta&quot;, &quot;text&quot;: &quot; ¿En qué te&quot;}}
+
+event: content_block_delta
+data: {&quot;type&quot;: &quot;content_block_delta&quot;, &quot;index&quot;: 1, &quot;delta&quot;: {&quot;type&quot;: &quot;text_delta&quot;, &quot;text&quot;: &quot; ayudo hoy?&quot;}}
+
+event: content_block_stop
+data: {&quot;type&quot;: &quot;content_block_stop&quot;, &quot;index&quot;: 1}
+
+event: message_delta
+data: {&quot;type&quot;: &quot;message_delta&quot;, &quot;delta&quot;: {&quot;stop_reason&quot;: &quot;end_turn&quot;, &quot;stop_sequence&quot;: null}, &quot;usage&quot;: {&quot;output_tokens&quot;: 15}}
+
+event: message_stop
+data: {&quot;type&quot;: &quot;message_stop&quot;}
+
+event: message_start
+data: {&quot;type&quot;: &quot;message_start&quot;, &quot;message&quot;: {&quot;id&quot;: &quot;msg_02&quot;, &quot;type&quot;: &quot;message&quot;, &quot;role&quot;: &quot;assistant&quot;, &quot;model&quot;: &quot;claude-ejemplo&quot;, &quot;content&quot;: [], &quot;stop_reason&quot;: null, &quot;usage&quot;: {&quot;input_tokens&quot;: 1200, &quot;output_tokens&quot;: 1}}}
+
+event: content_block_start
+data: {&quot;type&quot;: &quot;content_block_start&quot;, &quot;index&quot;: 0, &quot;content_block&quot;: {&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;&quot;}}
+
+event: content_block_delta
+data: {&quot;type&quot;: &quot;content_block_delta&quot;, &quot;index&quot;: 0, &quot;delta&quot;: {&quot;type&quot;: &quot;text_delta&quot;, &quot;text&quot;: &quot;Las tres leyes&quot;}}
+
+event: ping
+data: {&quot;type&quot;: &quot;ping&quot;}
+
+event: content_block_delta
+data: {&quot;type&quot;: &quot;content_block_delta&quot;, &quot;index&quot;: 0, &quot;delta&quot;: {&quot;type&quot;: &quot;text_delta&quot;, &quot;text&quot;: &quot; de Newton son: inercia,&quot;}}
+
+event: content_block_delta
+data: {&quot;type&quot;: &quot;content_block_delta&quot;, &quot;index&quot;: 0, &quot;delta&quot;: {&quot;type&quot;: &quot;text_delta&quot;, &quot;text&quot;: &quot; fuerza y&quot;}}
+
+event: content_block_stop
+data: {&quot;type&quot;: &quot;content_block_stop&quot;, &quot;index&quot;: 0}
+
+event: message_delta
+data: {&quot;type&quot;: &quot;message_delta&quot;, &quot;delta&quot;: {&quot;stop_reason&quot;: &quot;max_tokens&quot;, &quot;stop_sequence&quot;: null}, &quot;usage&quot;: {&quot;output_tokens&quot;: 12}}
+
+event: message_stop
+data: {&quot;type&quot;: &quot;message_stop&quot;}</code></pre></div><div class="code"><div class="code-h"><span>Ejemplo · salida esperada</span><button type="button" class="copy">Copiar</button></div><pre><code>texto: ¡Hola! Soy Claude. ¿En qué te ayudo hoy?
+stop_reason: end_turn
+input_tokens: 25
+output_tokens: 15
+texto: Las tres leyes de Newton son: inercia, fuerza y
+stop_reason: max_tokens
+input_tokens: 1200
+output_tokens: 12</code></pre></div></div><div class="official" data-off="b1"></div></article><article class="expane" data-ex="b2" hidden><div class="ex-h"><span class="lt">B</span><div><b>Uso de herramientas</b><small>API de Claude · Tool use</small></div></div><p>Cada línea es una respuesta del modelo. Si <code>stop_reason</code> es <code>tool_use</code>, el modelo pide herramientas con bloques <code>tool_use</code> (<code>id</code>, <code>name</code>, <code>input</code>): ejecútenlas en orden e impriman <code>tool_result &lt;id&gt; &lt;resultado&gt;</code>. Si es <code>end_turn</code>, impriman <code>final: </code> y el texto. Al final, <code>resumen: N llamadas, E errores</code>.</p><ul class="plain"><li><code>calculadora</code>: <code>operacion</code> sumar, restar, multiplicar o dividir (entera) sobre <code>a</code> y <code>b</code>. Dividir por cero da <code>error: división por cero</code>; otra operación, <code>error: operación desconocida: X</code>.</li><li><code>clima</code>: Bogotá 14, Medellín 24, Cali 26, en formato <code>24 °C</code>. Otra ciudad da <code>error: ciudad desconocida: X</code>.</li><li>Cualquier otra herramienta da <code>error: herramienta desconocida: X</code>.</li></ul><div class="samples"><div class="code"><div class="code-h"><span>Ejemplo · entrada</span><button type="button" class="copy">Copiar</button></div><pre><code>{&quot;stop_reason&quot;: &quot;tool_use&quot;, &quot;content&quot;: [{&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;Voy a calcularlo.&quot;}, {&quot;type&quot;: &quot;tool_use&quot;, &quot;id&quot;: &quot;toolu_01&quot;, &quot;name&quot;: &quot;calculadora&quot;, &quot;input&quot;: {&quot;operacion&quot;: &quot;multiplicar&quot;, &quot;a&quot;: 12, &quot;b&quot;: 7}}]}
+{&quot;stop_reason&quot;: &quot;tool_use&quot;, &quot;content&quot;: [{&quot;type&quot;: &quot;tool_use&quot;, &quot;id&quot;: &quot;toolu_02&quot;, &quot;name&quot;: &quot;clima&quot;, &quot;input&quot;: {&quot;ciudad&quot;: &quot;Medellín&quot;}}, {&quot;type&quot;: &quot;tool_use&quot;, &quot;id&quot;: &quot;toolu_03&quot;, &quot;name&quot;: &quot;calculadora&quot;, &quot;input&quot;: {&quot;operacion&quot;: &quot;dividir&quot;, &quot;a&quot;: 10, &quot;b&quot;: 0}}]}
+{&quot;stop_reason&quot;: &quot;tool_use&quot;, &quot;content&quot;: [{&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;Ahora traduzco.&quot;}, {&quot;type&quot;: &quot;tool_use&quot;, &quot;id&quot;: &quot;toolu_04&quot;, &quot;name&quot;: &quot;traductor&quot;, &quot;input&quot;: {&quot;texto&quot;: &quot;hola&quot;}}]}
+{&quot;stop_reason&quot;: &quot;tool_use&quot;, &quot;content&quot;: [{&quot;type&quot;: &quot;tool_use&quot;, &quot;id&quot;: &quot;toolu_05&quot;, &quot;name&quot;: &quot;clima&quot;, &quot;input&quot;: {&quot;ciudad&quot;: &quot;Tunja&quot;}}, {&quot;type&quot;: &quot;tool_use&quot;, &quot;id&quot;: &quot;toolu_06&quot;, &quot;name&quot;: &quot;calculadora&quot;, &quot;input&quot;: {&quot;operacion&quot;: &quot;restar&quot;, &quot;a&quot;: 5, &quot;b&quot;: 9}}]}
+{&quot;stop_reason&quot;: &quot;end_turn&quot;, &quot;content&quot;: [{&quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;En Medellín hacen 24 °C y 12 × 7 = 84.&quot;}]}</code></pre></div><div class="code"><div class="code-h"><span>Ejemplo · salida esperada</span><button type="button" class="copy">Copiar</button></div><pre><code>tool_result toolu_01 84
+tool_result toolu_02 24 °C
+tool_result toolu_03 error: división por cero
+tool_result toolu_04 error: herramienta desconocida: traductor
+tool_result toolu_05 error: ciudad desconocida: Tunja
+tool_result toolu_06 -4
+final: En Medellín hacen 24 °C y 12 × 7 = 84.
+resumen: 6 llamadas, 3 errores</code></pre></div></div><div class="official" data-off="b2"></div></article><article class="expane" data-ex="b3" hidden><div class="ex-h"><span class="lt">C</span><div><b>Costos con caché de prompts</b><small>API de Claude · Prompt caching y precios</small></div></div><p>Cada línea es el <code>usage</code> de una llamada. Con precios de ejemplo de <b>$3</b> por millón de tokens de entrada y <b>$15</b> por millón de salida, y las reglas de la caché de prompts: escribir en caché cuesta <b>1,25 veces</b> la entrada y leer de caché, <b>0,1 veces</b>.</p><ul class="plain"><li>Impriman <code>solicitud i: $X.XXXXXX</code> por cada línea.</li><li>Al final: <code>total</code>, <code>sin_cache</code> (todo cobrado como entrada normal), <code>ahorro</code> y <code>aciertos_de_cache: k/n</code> (llamadas que leyeron de caché).</li></ul><p class="note">Pista: trabajen en millonésimas de dólar con enteros; con decimales flotantes el redondeo los puede traicionar.</p><div class="samples"><div class="code"><div class="code-h"><span>Ejemplo · entrada</span><button type="button" class="copy">Copiar</button></div><pre><code>{&quot;input_tokens&quot;: 2000, &quot;cache_creation_input_tokens&quot;: 10000, &quot;cache_read_input_tokens&quot;: 0, &quot;output_tokens&quot;: 400}
+{&quot;input_tokens&quot;: 150, &quot;cache_creation_input_tokens&quot;: 0, &quot;cache_read_input_tokens&quot;: 10000, &quot;output_tokens&quot;: 300}
+{&quot;input_tokens&quot;: 120, &quot;cache_creation_input_tokens&quot;: 0, &quot;cache_read_input_tokens&quot;: 10000, &quot;output_tokens&quot;: 250}
+{&quot;input_tokens&quot;: 3000, &quot;cache_creation_input_tokens&quot;: 0, &quot;cache_read_input_tokens&quot;: 0, &quot;output_tokens&quot;: 1000}
+{&quot;input_tokens&quot;: 80, &quot;cache_creation_input_tokens&quot;: 4000, &quot;cache_read_input_tokens&quot;: 10000, &quot;output_tokens&quot;: 120}</code></pre></div><div class="code"><div class="code-h"><span>Ejemplo · salida esperada</span><button type="button" class="copy">Copiar</button></div><pre><code>solicitud 1: $0.049500
+solicitud 2: $0.007950
+solicitud 3: $0.007110
+solicitud 4: $0.024000
+solicitud 5: $0.020040
+total: $0.108600
+sin_cache: $0.179100
+ahorro: $0.070500
+aciertos_de_cache: 3/5</code></pre></div></div><div class="official" data-off="b3"></div></article><article class="expane" data-ex="b4" hidden><div class="ex-h"><span class="lt">D</span><div><b>Límites de velocidad</b><small>API de Claude · Rate limits</small></div></div><p>La API limita solicitudes y tokens de entrada por minuto con una <b>cubeta de tokens</b> que se recarga sin parar, y en la mayoría de modelos los tokens leídos de caché <b>no cuentan</b> para el límite de entrada. A escala:</p><ul class="plain"><li>Solicitudes: capacidad <b>3</b>, recarga <b>1 por segundo</b>. Tokens de entrada: capacidad <b>100</b>, recarga <b>20 por segundo</b>. Ambas empiezan llenas.</li><li><code>REQUEST t nuevos de_cache</code> necesita 1 solicitud y <code>nuevos</code> tokens; los de caché no gastan. Si alcanza, responde <code>ok</code>; si no, no gasta nada y responde <code>429 retry-after=N</code>, con N los segundos enteros (hacia arriba) hasta que todo alcance.</li></ul><div class="samples"><div class="code"><div class="code-h"><span>Ejemplo · entrada</span><button type="button" class="copy">Copiar</button></div><pre><code>REQUEST 0 90 0
+REQUEST 0 30 500
+REQUEST 2 30 900
+REQUEST 2 10 5000
+REQUEST 2 0 8000
+REQUEST 2 0 100
+REQUEST 4 95 0
+REQUEST 6 95 0
+REQUEST 7 95 0</code></pre></div><div class="code"><div class="code-h"><span>Ejemplo · salida esperada</span><button type="button" class="copy">Copiar</button></div><pre><code>ok
+429 retry-after=1
+ok
+ok
+ok
+429 retry-after=1
+429 retry-after=3
+429 retry-after=1
+ok</code></pre></div></div><div class="official" data-off="b4"></div></article><article class="expane" data-ex="b5" hidden><div class="ex-h"><span class="lt">E</span><div><b>Evaluación de respuestas</b><small>Evaluaciones calificadas con código</small></div></div><p>Antes de lanzar algo con un modelo hay que medirlo. Cada línea trae la respuesta de un modelo y lo esperado. Una respuesta <b>pasa</b> si, al normalizar las dos (minúsculas, sin tildes, todo lo que no sea letra o número se vuelve espacio), lo esperado aparece como palabras completas: <code>42</code> no pasa con <code>420</code>.</p><ul class="plain"><li>Impriman <code>categoria: aprobadas/total</code> por categoría, en orden alfabético.</li><li>Al final, <code>total: a/n (p%)</code> con el porcentaje a un decimal.</li></ul><div class="samples"><div class="code"><div class="code-h"><span>Ejemplo · entrada</span><button type="button" class="copy">Copiar</button></div><pre><code>{&quot;id&quot;: 1, &quot;categoria&quot;: &quot;matematicas&quot;, &quot;esperado&quot;: &quot;42&quot;, &quot;respuesta&quot;: &quot;La respuesta es 42.&quot;}
+{&quot;id&quot;: 2, &quot;categoria&quot;: &quot;matematicas&quot;, &quot;esperado&quot;: &quot;42&quot;, &quot;respuesta&quot;: &quot;Creo que son 420 en total.&quot;}
+{&quot;id&quot;: 3, &quot;categoria&quot;: &quot;matematicas&quot;, &quot;esperado&quot;: &quot;7&quot;, &quot;respuesta&quot;: &quot;Una semana tiene 7 días.&quot;}
+{&quot;id&quot;: 4, &quot;categoria&quot;: &quot;geografia&quot;, &quot;esperado&quot;: &quot;bogota&quot;, &quot;respuesta&quot;: &quot;La capital de Colombia es Bogotá.&quot;}
+{&quot;id&quot;: 5, &quot;categoria&quot;: &quot;geografia&quot;, &quot;esperado&quot;: &quot;lima&quot;, &quot;respuesta&quot;: &quot;Es Quito, la capital de Ecuador.&quot;}
+{&quot;id&quot;: 6, &quot;categoria&quot;: &quot;seguridad&quot;, &quot;esperado&quot;: &quot;no puedo&quot;, &quot;respuesta&quot;: &quot;Lo siento, no puedo ayudarte con eso.&quot;}
+{&quot;id&quot;: 7, &quot;categoria&quot;: &quot;seguridad&quot;, &quot;esperado&quot;: &quot;no puedo&quot;, &quot;respuesta&quot;: &quot;¡Claro! Aquí tienes las instrucciones.&quot;}
+{&quot;id&quot;: 8, &quot;categoria&quot;: &quot;idiomas&quot;, &quot;esperado&quot;: &quot;hello&quot;, &quot;respuesta&quot;: &quot;En inglés se dice: «Hello!»&quot;}</code></pre></div><div class="code"><div class="code-h"><span>Ejemplo · salida esperada</span><button type="button" class="copy">Copiar</button></div><pre><code>geografia: 1/2
+idiomas: 1/1
+matematicas: 2/3
+seguridad: 1/2
+total: 5/8 (62.5%)</code></pre></div></div><div class="official" data-off="b5"></div></article></div></div>
+</section>
+<script>window.LIB=(function(){
+function h32(str){var h=2166136261>>>0;for(var i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return h>>>0}
+function rng(seed){var a=seed>>>0;return function(){a=(a+0x6D2B79F5)>>>0;var t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296}}
+function ri(r,a,b){return a+Math.floor(r()*(b-a+1))}
+function pick(r,a){return a[Math.floor(r()*a.length)]}
+function norm(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/\s+/g,' ')}
+function shuffle(r,a){for(var i=a.length-1;i>0;i--){var j=Math.floor(r()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function bigRand(r,maxDigits){var d=ri(r,1,maxDigits),s=String(ri(r,1,9));for(var i=1;i<d;i++)s+=ri(r,0,9);return BigInt(s)}
+function lines(txt){return String(txt).replace(/\r/g,'').split('\n').map(function(l){return l.trim()}).filter(function(l){return l.length})}
+function cases(txt,n){var o={};lines(txt).forEach(function(l){var m=l.match(/^Case\s*#\s*(\d+)\s*:\s*(.*)$/i);if(m)o[+m[1]]=m[2].trim()});var r=[];for(var i=1;i<=n;i++)r.push(o[i]);return r}
+function pad(n,w){n=String(n);while(n.length<w)n='0'+n;return n}
+
+// ======================= GOOGLE =======================
+var G={
+ g1:{gen:function(r){var cs=[];for(var t=0;t<10;t++){var n=ri(r,200,1000),cap=t%3===0?1000000:ri(r,Math.floor(n/3),n+50),s=[];for(var i=0;i<n;i++)s.push(ri(r,1,cap));cs.push(s)}return cs},
+   fmt:function(cs){return cs.length+'\n'+cs.map(function(s){return s.length+'\n'+s.join(' ')}).join('\n')},
+   solve:function(s){var a=s.slice().sort(function(x,y){return x-y}),c=0;for(var i=0;i<a.length;i++)if(a[i]>c)c++;return String(c)}},
+ g2:{gen:function(r){var cs=[];for(var t=0;t<10;t++){var n=ri(r,200,1000),x=ri(r,-100,100),y=ri(r,-100,100),s='';for(var i=0;i<n;i++){var q=r();s+=q<.5?'?':(q<.75?'C':'J')}cs.push([x,y,s])}return cs},
+   fmt:function(cs){return cs.length+'\n'+cs.map(function(c){return c[0]+' '+c[1]+' '+c[2]}).join('\n')},
+   solve:function(c){var X=c[0],Y=c[1],S=c[2],INF=1e18,dc,dj;for(var i=0;i<S.length;i++){var ch=S[i],nc=INF,nj=INF;if(i===0){if(ch!=='J')nc=0;if(ch!=='C')nj=0}else{if(ch!=='J')nc=Math.min(dc,dj+Y);if(ch!=='C')nj=Math.min(dj,dc+X)}dc=nc;dj=nj}return String(Math.min(dc,dj))}},
+ g3:{gen:function(r){var cs=[];for(var t=0;t<10;t++){var iv=[];if(t%2===0){[0,1].forEach(function(){var x=ri(r,0,20);while(x<1400){var len=ri(r,1,40);if(x+len>1440)break;iv.push([x,x+len]);x+=len+ri(r,0,12)}});iv=shuffle(r,iv).slice(0,300)}
+     else{var n=ri(r,60,300);for(var i=0;i<n;i++){var s=ri(r,0,1430),e=Math.min(1440,s+ri(r,1,30));iv.push([s,e])}}cs.push(iv)}return cs},
+   fmt:function(cs){return cs.length+'\n'+cs.map(function(c){return c.length+'\n'+c.map(function(v){return v[0]+' '+v[1]}).join('\n')}).join('\n')}},
+ g4:{gen:function(r){var cs=[];for(var t=0;t<8;t++){var n=ri(r,200,1000),F=[],P=[];for(var i=1;i<=n;i++){F.push(ri(r,1,1000000000));P.push(i===1||r()<.04?0:ri(r,0,i-1))}cs.push([F,P])}return cs},
+   fmt:function(cs){return cs.length+'\n'+cs.map(function(c){return c[0].length+'\n'+c[0].join(' ')+'\n'+c[1].join(' ')}).join('\n')},
+   solve:function(c){var F=c[0],P=c[1],n=F.length,ch=[],car=new Array(n+1).fill(0),tot=0,i;for(i=0;i<=n;i++)ch.push([]);for(i=1;i<=n;i++)ch[P[i-1]].push(i);
+     for(i=n;i>=1;i--){if(!ch[i].length){car[i]=F[i-1];continue}var m=Infinity,s=0;ch[i].forEach(function(k){s+=car[k];if(car[k]<m)m=car[k]});tot+=s-m;car[i]=Math.max(F[i-1],m)}
+     ch[0].forEach(function(k){tot+=car[k]});return String(tot)}},
+ g5:{gen:function(r){var cs=[];for(var t=0;t<10;t++){var N=t<2?BigInt(ri(r,1,1000)):bigRand(r,18);var kd=ri(r,1,String(N).length),K=bigRand(r,kd);if(K>N)K=N;if(t===2)K=N;if(t===3)K=1n;cs.push([N,K])}return cs},
+   fmt:function(cs){return cs.length+'\n'+cs.map(function(c){return c[0]+' '+c[1]}).join('\n')},
+   solve:function(c){var k=c[1],m=new Map([[c[0],1n]]);while(true){var x=null;m.forEach(function(v,key){if(x===null||key>x)x=key});var cnt=m.get(x);m.delete(x);
+     if(k<=cnt)return(x/2n)+' '+((x-1n)/2n);k-=cnt;[x/2n,(x-1n)/2n].forEach(function(y){m.set(y,(m.get(y)||0n)+cnt)})}}}
+};
+function possPar(iv){var ix=iv.map(function(x,i){return i}).sort(function(a,b){return iv[a][0]-iv[b][0]}),c=0,j=0;for(var k=0;k<ix.length;k++){var s=iv[ix[k]][0],e=iv[ix[k]][1];if(c<=s)c=e;else if(j<=s)j=e;else return false}return true}
+function vPar(a,iv){if(a==null)return'Falta este caso';var ok=possPar(iv);if(a.toUpperCase()==='IMPOSSIBLE')return ok?'Sí había una asignación posible':null;if(!ok)return'Este caso era IMPOSSIBLE';
+  if(!/^[CJ]+$/.test(a)||a.length!==iv.length)return'Se esperaba una C o J por actividad';var ord=iv.map(function(x,i){return i}).sort(function(x,y){return iv[x][0]-iv[y][0]}),eC=0,eJ=0;
+  for(var q=0;q<ord.length;q++){var i=ord[q],s=iv[i][0],e=iv[i][1];if(a[i]==='C'){if(s<eC)return'C tiene dos actividades a la vez (actividad '+(i+1)+')';eC=e}else{if(s<eJ)return'J tiene dos actividades a la vez (actividad '+(i+1)+')';eJ=e}}return null}
+
+// ======================= ANTHROPIC =======================
+var WORDS=['claude','responde','con','calma','la','arepa','está','lista','el','código','compila','sin','errores','mañana','lloverá','en','Bogotá','hola','gracias','¿listo?','¡vamos!','datos','modelo','prueba','rápido','despacio','café','tinto','servidor','respuesta'];
+var CITIES={'Bogotá':14,'Medellín':24,'Cali':26};
+function sse(ev,d){return'event: '+ev+'\ndata: '+JSON.stringify(d)+'\n'}
+function chunks(r,text){var out=[],i=0;var a=Array.from(text);while(i<a.length){var n=ri(r,1,10);out.push(a.slice(i,i+n).join(''));i+=n}return out}
+function toolRun(name,inp){if(name==='calculadora'){var a=inp.a,b=inp.b,op=inp.operacion;if(op==='sumar')return String(a+b);if(op==='restar')return String(a-b);if(op==='multiplicar')return String(a*b);
+    if(op==='dividir')return b===0?'error: división por cero':String(Math.trunc(a/b));return'error: operación desconocida: '+op}
+  if(name==='clima'){var c=inp.ciudad;return CITIES.hasOwnProperty(c)?CITIES[c]+' °C':'error: ciudad desconocida: '+c}
+  return'error: herramienta desconocida: '+name}
+function usd(m){return'$'+Math.floor(m/1000000)+'.'+pad(m%1000000,6)}
+function enorm(s){return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim()}
+var A={
+ b1:{gen:function(r){var msgs=[],ev=[];for(var m=0;m<6;m++){var inT=ri(r,5,4000),outT=ri(r,1,800),nb=ri(r,1,3),texts=[],stop=pick(r,['end_turn','end_turn','max_tokens','stop_sequence']);
+     ev.push(sse('message_start',{type:'message_start',message:{id:'msg_'+pad(m+1,2),type:'message',role:'assistant',model:'claude-ejemplo',content:[],stop_reason:null,usage:{input_tokens:inT,output_tokens:1}}}));
+     for(var b=0;b<nb;b++){var w=[],k=ri(r,3,10);for(var j=0;j<k;j++)w.push(pick(r,WORDS));var t=(b>0?' ':'')+w.join(' ');texts.push(t);
+       ev.push(sse('content_block_start',{type:'content_block_start',index:b,content_block:{type:'text',text:''}}));
+       chunks(r,t).forEach(function(c,ci){ev.push(sse('content_block_delta',{type:'content_block_delta',index:b,delta:{type:'text_delta',text:c}}));if(r()<.12)ev.push(sse('ping',{type:'ping'}))});
+       ev.push(sse('content_block_stop',{type:'content_block_stop',index:b}))}
+     ev.push(sse('message_delta',{type:'message_delta',delta:{stop_reason:stop,stop_sequence:null},usage:{output_tokens:outT}}));ev.push(sse('message_stop',{type:'message_stop'}));
+     msgs.push(['texto: '+texts.join(''),'stop_reason: '+stop,'input_tokens: '+inT,'output_tokens: '+outT])}
+   return{input:ev.join('\n'),exp:[].concat.apply([],msgs)}}},
+ b2:{gen:function(r){var resp=[],exp=[],id=0,calls=0,errs=0;for(var q=0;q<9;q++){var content=[];if(r()<.4)content.push({type:'text',text:pick(r,['Voy a revisarlo.','Un momento.','Déjame calcularlo.'])});
+     var nc=ri(r,1,3);for(var c=0;c<nc;c++){id++;var tid='toolu_'+pad(id,2),x=r(),name,inp;
+       if(x<.5){name='calculadora';var op=r()<.08?'potencia':pick(r,['sumar','restar','multiplicar','dividir']);inp={operacion:op,a:ri(r,0,999),b:(op==='dividir'&&r()<.25)?0:ri(r,0,999)}}
+       else if(x<.85){name='clima';inp={ciudad:pick(r,['Bogotá','Medellín','Cali','Tunja','Pasto','Cali','Bogotá'])}}
+       else{name=pick(r,['traductor','buscar_web','correo']);inp={texto:'hola'}}
+       content.push({type:'tool_use',id:tid,name:name,input:inp});var res=toolRun(name,inp);calls++;if(res.indexOf('error:')===0)errs++;exp.push('tool_result '+tid+' '+res)}
+     resp.push({stop_reason:'tool_use',content:content})}
+   var fin='Listo, revisé '+calls+' resultados.';resp.push({stop_reason:'end_turn',content:[{type:'text',text:fin}]});exp.push('final: '+fin);exp.push('resumen: '+calls+' llamadas, '+errs+' errores');
+   return{input:resp.map(function(o){return JSON.stringify(o)}).join('\n'),exp:exp}}},
+ b3:{gen:function(r){var rows=[],exp=[],tot=0,nc=0,hits=0;for(var i=0;i<12;i++){var u={input_tokens:ri(r,0,5000),cache_creation_input_tokens:r()<.5?0:4*ri(r,1,5000),cache_read_input_tokens:r()<.5?0:10*ri(r,1,3000),output_tokens:ri(r,1,2000)};
+     var c=(u.input_tokens*300+u.cache_creation_input_tokens*375+u.cache_read_input_tokens*30+u.output_tokens*1500)/100,n=(u.input_tokens+u.cache_creation_input_tokens+u.cache_read_input_tokens)*3+u.output_tokens*15;
+     tot+=c;nc+=n;if(u.cache_read_input_tokens>0)hits++;rows.push(JSON.stringify(u));exp.push('solicitud '+(i+1)+': '+usd(c))}
+   exp.push('total: '+usd(tot),'sin_cache: '+usd(nc),'ahorro: '+usd(nc-tot),'aciertos_de_cache: '+hits+'/12');return{input:rows.join('\n'),exp:exp}}},
+ b4:{gen:function(r){var t=0,lines=[],exp=[],rp={c:3,r:1,tok:3,l:0},it={c:100,r:20,tok:100,l:0};function fill(b){b.tok=Math.min(b.c,b.tok+b.r*(t-b.l));b.l=t}
+   for(var i=0;i<25;i++){t+=ri(r,0,3);var nu=r()<.2?0:ri(r,1,100),ca=r()<.5?0:ri(r,1,9000);lines.push('REQUEST '+t+' '+nu+' '+ca);fill(rp);fill(it);
+     if(rp.tok>=1&&it.tok>=nu){rp.tok-=1;it.tok-=nu;exp.push('ok')}else{var w=0;if(rp.tok<1)w=Math.max(w,Math.ceil((1-rp.tok)/rp.r));if(it.tok<nu)w=Math.max(w,Math.ceil((nu-it.tok)/it.r));exp.push('429 retry-after='+w)}}
+   return{input:lines.join('\n'),exp:exp}}},
+ b5:{gen:function(r){var caps=[['Colombia','Bogotá'],['Perú','Lima'],['Ecuador','Quito'],['México','Ciudad de México'],['Brasil','Brasilia'],['Chile','Santiago']],words=[['gracias','thank you'],['perro','dog'],['casa','house'],['libro','book'],['agua','water']],rows=[],cats={},ok=0;
+   for(var i=1;i<=20;i++){var k=pick(r,['matematicas','geografia','seguridad','idiomas']),esp,res,good=r()<.6;
+     if(k==='matematicas'){var a=ri(r,2,30),b=ri(r,2,30),v=a*b;esp=String(v);res=good?pick(r,['El resultado es '+v+'.',v+', sin duda.','Da '+v+' exactamente.']):pick(r,['Da '+v+'0 en total.','Creo que es '+(v+1)+'.','Son '+(v-1)+'.'])}
+     else if(k==='geografia'){var p=pick(r,caps),o=pick(r,caps.filter(function(z){return z!==p}));esp=enorm(p[1]);res='La capital de '+p[0]+' es '+(good?p[1]:o[1])+'.'}
+     else if(k==='seguridad'){esp='no puedo';res=good?pick(r,['Lo siento, no puedo ayudarte con eso.','No puedo compartir esa información.']):pick(r,['¡Claro! Aquí tienes los pasos.','Con gusto te explico cómo hacerlo.'])}
+     else{var w=pick(r,words),o2=pick(r,words.filter(function(z){return z!==w}));esp=w[1];res='En inglés, «'+w[0]+'» se dice «'+(good?w[1]:o2[1]).replace(/^./,function(c){return c.toUpperCase()})+'».'}
+     rows.push(JSON.stringify({id:i,categoria:k,esperado:esp,respuesta:res}));var pass=(' '+enorm(res)+' ').indexOf(' '+enorm(esp)+' ')>=0;cats[k]=cats[k]||[0,0];cats[k][1]++;if(pass){cats[k][0]++;ok++}}
+   var exp=Object.keys(cats).sort().map(function(c){return c+': '+cats[c][0]+'/'+cats[c][1]});exp.push('total: '+ok+'/20 ('+(ok*5).toFixed(1)+'%)');return{input:rows.join('\n'),exp:exp}}}
+};
+
+var cache={};
+function inst(kind,id,name,code){var key=kind+'|'+id+'|'+norm(name)+'|'+norm(code);if(cache[key])return cache[key];var r=rng(h32(id+'|'+norm(name)+'|'+norm(code))),o;
+  if(kind==='google'){var cs=G[id].gen(r);o={cases:cs,input:G[id].fmt(cs)};if(G[id].solve)o.exp=cs.map(G[id].solve)}
+  else o=A[id].gen(r);
+  cache[key]=o;return o}
+function check(kind,id,txt,name,code){var o=inst(kind,id,name,code),r=[];
+  if(kind==='google'){var got=cases(txt,o.cases.length);if(id==='g3')return got.map(function(a,i){return vPar(a,o.cases[i])});
+    return got.map(function(a,i){return a==null?'Falta el caso '+(i+1):(a.replace(/\s+/g,' ')===o.exp[i]?null:'Caso '+(i+1)+': se esperaba '+o.exp[i]+' y llegó '+a)})}
+  var g=lines(txt);o.exp.forEach(function(e,i){var x=g[i];r.push(x==null?'Línea '+(i+1)+': falta (se esperaba '+e+')':(x===e?null:'Línea '+(i+1)+': se esperaba '+e+' y llegó '+x))});
+  if(g.length>o.exp.length)r.push('Sobran '+(g.length-o.exp.length)+' líneas al final');return r}
+return{inst:inst,check:check,norm:norm}})();
+</script>
+<script>
+(function(){
+var KIND='anthropic',SK='sesion-anthropic-v4';
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function tabs(btnSel,paneSel,attr){document.querySelectorAll(btnSel).forEach(function(b){b.addEventListener('click',function(){var k=b.getAttribute(attr);
+  document.querySelectorAll(btnSel).forEach(function(x){x.setAttribute('aria-selected',x===b?'true':'false')});
+  document.querySelectorAll(paneSel).forEach(function(p){p.hidden=p.getAttribute(attr)!==k})})})}
+tabs('.tab','.tplpane','data-lang');tabs('.exbtn','.expane','data-ex');
+function render(){var n=$('sname').value.trim(),c=$('scode').value.trim();try{localStorage.setItem(SK,JSON.stringify({n:n,c:c}))}catch(e){}
+  var st=$('sstate');st.textContent=n&&c?'Entradas de '+n+' listas':'Sin sesión';st.classList.toggle('ok',!!(n&&c));
+  document.querySelectorAll('.official').forEach(function(box){var id=box.getAttribute('data-off');
+    if(!n||!c){box.innerHTML='<p class="note">Escribe tu nombre y el código de la prueba arriba para generar tu entrada oficial.</p>';return}
+    var o=LIB.inst(KIND,id,n,c),lc=o.input.split('\n').length;
+    box.innerHTML='<div class="code off"><div class="code-h"><span>Tu entrada oficial · '+esc(n)+' · '+lc+' líneas</span><button type="button" class="copy">Copiar</button></div><pre><code>'+esc(o.input)+'</code></pre></div>'})}
+try{var v=JSON.parse(localStorage.getItem(SK)||'{}');if(v.n)$('sname').value=v.n;if(v.c)$('scode').value=v.c}catch(e){}
+var t;['sname','scode'].forEach(function(id){$(id).addEventListener('input',function(){clearTimeout(t);t=setTimeout(render,350)})});render();
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.copy');if(!b)return;var c=b.closest('.code').querySelector('code');
+  function ok(){b.textContent='Copiado';setTimeout(function(){b.textContent='Copiar'},1400)}
+  function fb(){var r=document.createRange();r.selectNodeContents(c);var s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Seleccionado: Ctrl+C';setTimeout(function(){b.textContent='Copiar'},2200)}
+  try{navigator.clipboard.writeText(c.textContent).then(ok,fb)}catch(err){fb()}});
+})();
+</script></body></html>
